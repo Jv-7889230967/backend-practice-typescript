@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { User } from "./userModels";
 
 const userProfile = new Schema({
     coverImage: {
@@ -32,13 +31,10 @@ const userProfile = new Schema({
         type: String,
         default: "",
     },
-    conutryCode: {
+    countryCode: {
         type: String,
         default: "",
     },
-    // phoneNumber: {
-    //     type: Number,
-    // },
     owner: {
         type: Schema.Types.ObjectId,
         ref: "User",

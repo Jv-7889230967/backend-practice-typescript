@@ -2,19 +2,19 @@ import { ApiError } from "../utils/ApiError";
 import twilio from "twilio";
 
 export class SendMessage {
-    phonenumber: number;
-    payload: string;
+    phonenumber: number | undefined;
+    payload: string | undefined;
     constructor(phonenumber: number, payload: string) {
         this.phonenumber = phonenumber;
         this.payload = payload;
     }
 
     sendMessage = async () => {
-        const client = twilio("AC749ff3da530c00674ca8c992d54098c4", "93efc156cc9c0e5f49da00da39de77e9");
+        const client = twilio(process.env.TWILLIO_ACCOUNT_SID, process.env.TWILLIO_ACCOUNT_AUTH_TOKEN);
         try {
             await client.messages.create({
                 body: this.payload,
-                from: "+13153521337",
+                from: process.env.TWILLIO_PHONE_NUMBER,
                 to: `+91${this.phonenumber}`
             });
         } catch (error) {

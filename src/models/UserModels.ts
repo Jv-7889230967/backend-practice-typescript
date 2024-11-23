@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { userRoleEnum } from "../constants";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ApiError } from "../utils/ApiError";
 
 
 
@@ -64,36 +65,34 @@ userSchema.methods.isPasswordCorrect = async function (password: string) {  //pa
 
 
 userSchema.methods.generateAccess_token = function () {   // method to generate the access token using jwt
-    const accessTokenSecret = "jatinverma";
-    if (!accessTokenSecret) {
-        throw new Error('JWT_ACCESS_TOKEN_SECRET is not defined');
+    const access_token_secret: string | undefined = process.env.JWT_ACCESS_TOKEN_SECRET;
+    if (!access_token_secret) {
+        throw new ApiError("access token is undefined", 401);
     }
-
     return jwt.sign({
         _id: this._id,
         email: this.email,
         username: this.username,
         role: this.role,
     },
-    accessTokenSecret,
-    {
-        expiresIn: '1d'
-    });
+        access_token_secret,
+        {
+            expiresIn: '1d'
+        });
 }
 
 userSchema.methods.generateRefresh_token = function () {   // method to generate refresh token using jwt
-    const refreshTokenSecret = "jatinverma";
-    if (!refreshTokenSecret) {
-        throw new Error('JWT_REFRESH_TOKEN_SECRET is not defined');
+    const refresh_token_secret: string | undefined = process.env.JWT_REFRESH_TOKEN_SECRET;
+    if (!refresh_token_secret) {
+        throw new ApiError("refresh token is not defined", 401);
     }
-
     return jwt.sign({
         _id: this._id
     },
-    refreshTokenSecret,
-    {
-        expiresIn: '1d'
-    });
+        refresh_token_secret,
+        {
+            expiresIn: '1d'
+        });
 }
 
 export const User = mongoose.model("User", userSchema);

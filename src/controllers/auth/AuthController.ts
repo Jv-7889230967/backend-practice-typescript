@@ -6,9 +6,11 @@ import { generateOTP } from "../../utils/GenerateOTP";
 import { otpStore } from "../../utils/TemporaryStorage";
 import { User } from "../../models/UserModels";
 import { Request, Response, NextFunction } from "express";
-import { UserType } from "../../types/user";
+import { UserType } from '../../../types/user';
 import mongoose from "mongoose";
 import { SendMessage } from "../../services/SendMessage";
+import { authRequest } from "../../../types/express";
+import { getUserFromRequest } from "../../utils/AttachUser";
 
 
 class UserController extends SendMessage {
@@ -138,8 +140,9 @@ class UserController extends SendMessage {
         return res.status(200).json({ message: "Your OTP has been sent to the phone number" });
     });
 
-    logoutUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        await this.UserModel.findByIdAndUpdate(req.user?._id, {
+    logoutUser = asyncHandler(async (req: authRequest, res: Response, next: NextFunction) => {
+        const currentUser=getUserFromRequest(req);
+        await this.UserModel.findByIdAndUpdate(currentUser?._id, {
             $set: { refreshtoken: "" }
         },
             { new: true }
