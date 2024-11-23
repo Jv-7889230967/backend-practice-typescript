@@ -1,5 +1,5 @@
 import { ApiError } from "../utils/ApiError";
-import { getTwilioClient } from "./TwilioClient";
+import twilio from "twilio";
 
 export class SendMessage {
     phonenumber: number | undefined;
@@ -10,7 +10,13 @@ export class SendMessage {
     }
 
     sendMessage = async () => {
-        const client = getTwilioClient();
+        const twillio_SID = process.env.TWILLIO_ACCOUNT_SID;
+        const twillio_Auth_TOKEN = process.env.TWILLIO_ACCOUNT_AUTH_TOKEN;
+
+        if (!twillio_SID || !twillio_Auth_TOKEN) {
+            throw new ApiError("Twilio credentials are missing", 500);
+        }
+        const client = twilio(twillio_SID, twillio_Auth_TOKEN);
         try {
             await client.messages.create({
                 body: this.payload,
