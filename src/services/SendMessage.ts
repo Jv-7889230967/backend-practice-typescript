@@ -10,7 +10,9 @@ export class SendMessage {
     }
 
     sendMessage = async () => {
-        const client = twilio(process.env.TWILLIO_ACCOUNT_SID, process.env.TWILLIO_ACCOUNT_AUTH_TOKEN);
+        const twillio_SID: string = process.env.TWILLIO_ACCOUNT_SID;
+        const twillio_Auth_TOKEN: string = process.env.TWILLIO_ACCOUNT_AUTH_TOKEN;
+        const client = twilio(twillio_SID, twillio_Auth_TOKEN);
         try {
             await client.messages.create({
                 body: this.payload,
