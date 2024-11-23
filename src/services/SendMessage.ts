@@ -1,5 +1,5 @@
 import { ApiError } from "../utils/ApiError";
-import twilio from "twilio";
+import { getTwilioClient } from "./TwilioClient";
 
 export class SendMessage {
     phonenumber: number | undefined;
@@ -10,9 +10,7 @@ export class SendMessage {
     }
 
     sendMessage = async () => {
-        const twillio_SID: string = process.env.TWILLIO_ACCOUNT_SID;
-        const twillio_Auth_TOKEN: string = process.env.TWILLIO_ACCOUNT_AUTH_TOKEN;
-        const client = twilio(twillio_SID, twillio_Auth_TOKEN);
+        const client = getTwilioClient();
         try {
             await client.messages.create({
                 body: this.payload,
