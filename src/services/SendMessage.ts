@@ -23,8 +23,8 @@ export class SendMessage {
                 from: process.env.TWILLIO_PHONE_NUMBER,
                 to: `+91${this.phonenumber}`
             });
-        } catch (error) {
-            throw new ApiError("Failed to send OTP", 500);
+        } catch (error: any) {
+            throw new ApiError(error ?? "Failed to send OTP", 500);
         }
     }
 }

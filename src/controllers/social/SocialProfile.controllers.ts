@@ -14,7 +14,7 @@ class SocialProfileController extends SendMessage {
         this.profileModel = profileModel;
     }
 
-    createSocialProfile = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    createSocialProfile = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
         const currentUser = getUserFromRequest(req);
         if (!currentUser) {
             throw new ApiError("Please login", 401);
