@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { SocialProfile } from "../../models/profile.model";
 import { SendMessage } from "../../services/SendMessage";
 import { asyncHandler } from "../../utils/AsyncHandler";
 import { getUserFromRequest } from "../../utils/AttachUser";
 import { ApiError } from "../../utils/ApiError";
 import { CheckProfile } from "../../services/CheckProfile";
+import { ProfileType } from "../../../types/profile";
 
 
 class SocialProfileController extends SendMessage {
@@ -14,7 +15,12 @@ class SocialProfileController extends SendMessage {
         this.profileModel = profileModel;
     }
 
-    createSocialProfile = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
+
+    /**
+     * @param reqObject
+     * @description function to create a social profile for a logined user by accessing the set user details in the req object 
+     */
+    createSocialProfile = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
         const currentUser = getUserFromRequest(req);
         if (!currentUser) {
             throw new ApiError("Please login", 401);
@@ -25,7 +31,7 @@ class SocialProfileController extends SendMessage {
             throw new ApiError("please fill all required fields", 401);
         }
         const checkProfle = new CheckProfile(currentUser?._id);
-        const profileExists: boolean = await checkProfle.getProfile();
+        const profileExists: boolean = await checkProfle.checkProfile();
 
         if (profileExists) {
             throw new ApiError("Social Profile Already exist", 409);
@@ -43,6 +49,23 @@ class SocialProfileController extends SendMessage {
                 profile: populatedData
             })
 
+    })
+
+    /**
+     * @param req object to get the currnt user id
+     * @description function to get the social profile of the logged in user.
+     */
+    getSocialProfile = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+        const currentUser = getUserFromRequest(req);
+        const Checkprofile = new CheckProfile(currentUser?.id);
+        const profile: ProfileType | null = await Checkprofile.getProfile();
+        if (!profile) {
+            throw new ApiError("Social Profile does not exists", 404);
+        }
+        return res.status(201).json({
+            message: "your socila profil",
+            profile: profile
+        })
     })
 }
 export const socialProfileController = new SocialProfileController(SocialProfile)
