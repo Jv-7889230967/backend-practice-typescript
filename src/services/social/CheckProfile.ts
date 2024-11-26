@@ -1,7 +1,8 @@
 import { ObjectId } from "mongoose"
-import { ProfileType } from "../../types/profile"
-import { SocialProfile } from "../models/profile.model"
-import { ApiError } from "../utils/ApiError";
+import { ProfileType } from "../../../types/profile";
+import { ApiError } from "../../utils/ApiError";
+import { SocialProfile } from "../../models/social/profile.model";
+
 
 
 export class CheckProfile {

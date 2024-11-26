@@ -1,16 +1,15 @@
 import { userRoleEnum } from "../../constants";
-// import { ObjectId } from 'mongodb';
 import { ApiError } from "../../utils/ApiError";
 import { asyncHandler } from "../../utils/AsyncHandler";
 import { generateOTP } from "../../utils/GenerateOTP";
 import { otpStore } from "../../utils/TemporaryStorage";
-import { User } from "../../models/UserModels";
+import { User } from "../../models/auth/UserModels";
 import { Request, Response, NextFunction } from "express";
 import { UserType } from '../../../types/user';
 import mongoose from "mongoose";
-import { SendMessage } from "../../services/SendMessage";
 import { authRequest } from "../../../types/express";
 import { getUserFromRequest } from "../../utils/AttachUser";
+import { SendMessage } from "../../services/shared/SendMessage";
 
 
 class UserController extends SendMessage {
@@ -111,10 +110,10 @@ class UserController extends SendMessage {
             }
 
             const user: UserType | null = await this.UserModel.findOne({ phonenumber }).select("_id");
-            const userId: mongoose.Schema.Types.ObjectId|undefined = user?._id;
+            const userId: mongoose.Schema.Types.ObjectId | undefined = user?._id;
             if (!user) {
                 throw new ApiError("User not found", 404);
-            } ``
+            }
 
             const tokens: { access_token: string | undefined, refresh_token: string | undefined } = await this.generateAccessRefreshToken(userId);
 
@@ -141,7 +140,7 @@ class UserController extends SendMessage {
     });
 
     logoutUser = asyncHandler(async (req: authRequest, res: Response, next: NextFunction) => {
-        const currentUser=getUserFromRequest(req);
+        const currentUser = getUserFromRequest(req);
         await this.UserModel.findByIdAndUpdate(currentUser?._id, {
             $set: { refreshtoken: "" }
         },

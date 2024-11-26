@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { SocialProfile } from "../../models/profile.model";
-import { SendMessage } from "../../services/SendMessage";
+import { SocialProfile } from "../../models/social/profile.model";
 import { asyncHandler } from "../../utils/AsyncHandler";
 import { getUserFromRequest } from "../../utils/AttachUser";
 import { ApiError } from "../../utils/ApiError";
-import { CheckProfile } from "../../services/CheckProfile";
 import { ProfileType } from "../../../types/profile";
+import { CheckProfile } from "../../services/social/CheckProfile";
+import { SendMessage } from "../../services/shared/SendMessage";
 
 
 class SocialProfileController extends SendMessage {
@@ -51,6 +51,7 @@ class SocialProfileController extends SendMessage {
 
     })
 
+    
     /**
      * @param req object to get the currnt user id
      * @description function to get the social profile of the logged in user.

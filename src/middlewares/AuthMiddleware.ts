@@ -3,10 +3,9 @@ import { UserType } from "../../types/user";
 import { ApiError } from "../utils/ApiError";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { asyncHandler } from "../utils/AsyncHandler";
-import { User } from "../models/UserModels";
+
 import { attachUserToRequest } from "../utils/AttachUser";
-import { configDotenv } from "dotenv";
-configDotenv();
+import { User } from "../models/auth/UserModels";
 
 export const authMiddleware = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies?.access_token || req.header("Authorization")?.replace("Bearer ", "");
@@ -14,7 +13,7 @@ export const authMiddleware = asyncHandler(async (req: Request, res: Response, n
         throw new ApiError("User Unauthorized", 401);
     }
 
-    const access_token_secret:string | undefined = process.env.JWT_ACCESS_TOKEN_SECRET;
+    const access_token_secret: string | undefined = process.env.JWT_ACCESS_TOKEN_SECRET;
     // console.log("secret",secret);
     if (!access_token_secret) {
         throw new ApiError("JWT access token secret is not defined", 401);
