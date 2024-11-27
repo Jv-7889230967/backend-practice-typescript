@@ -6,8 +6,7 @@ import { User } from "../../models/auth/UserModels";
 import { ApiError } from "../../utils/ApiError";
 import { UserType } from "../../../types/user";
 import { CheckUser } from "../../services/user/CheckUser";
-import { ProfileType } from "../../../types/profile";
-
+import { CheckProfile } from "../../services/social/CheckProfile";
 
 class FollowUnfollowUser extends CheckUser {
     followModel: typeof SocialFollow;
@@ -50,13 +49,46 @@ class FollowUnfollowUser extends CheckUser {
             followerId: currentUser?._id,
             followeeId: tobeFollowedUser.tobeFollowedId,
         })
-        
+
         const followDetails = await followUser.populate("followerId");
         return res
             .status(201)
             .json({
                 message: "you have successfully followed the user",
                 FollowerandFolloweeDetails: followDetails
+            })
+    })
+
+    UnFollowuser = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
+        const tobeUnfollowedUser = req.params;
+        if (!tobeUnfollowedUser) {
+            throw new ApiError("The ID of the user to unfollow is required", 400);
+        }
+
+        const currentUser: UserType | undefined = getUserFromRequest(req);
+        if (!currentUser) {
+            throw new ApiError("please login as user is not attached to req object", 409);
+        }
+        const checkProfile = new CheckProfile(currentUser.id);
+        const isFollowing: boolean = await checkProfile.followCheck();
+        console.log()
+        if (!isFollowing) {
+            throw new ApiError("You are not following this user", 409);
+        }
+
+        const unFollowedUser = await this.followModel.findOneAndDelete({
+            followerId: currentUser._id,
+            followeeId: tobeUnfollowedUser.tobeUnFollowedId,
+        }).populate("followeeId").select("-_id followeeId");
+
+        if (!unFollowedUser) {
+            throw new ApiError("Error occurred while unfollowing the user", 409);
+        }
+        return res
+            .status(200)
+            .json({
+                message: "you have successfully unfollowed user",
+                unFollowedUser: unFollowedUser
             })
     })
 }

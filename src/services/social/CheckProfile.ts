@@ -2,6 +2,7 @@ import { ObjectId } from "mongoose"
 import { ProfileType } from "../../../types/profile";
 import { ApiError } from "../../utils/ApiError";
 import { SocialProfile } from "../../models/social/profile.model";
+import { SocialFollow } from "../../models/social/follow.model";
 
 
 
@@ -27,6 +28,21 @@ export class CheckProfile {
             return false;
         } catch (error: any) {
             return error;
+        }
+    }
+    followCheck = async (): Promise<boolean> => {
+        try {
+            const profileExist = await this.checkProfile();
+            if (!profileExist) {
+                throw new ApiError("profile does not exist", 404);
+            }
+            const isFollowing: ProfileType | null = await SocialFollow.findOne({ followerId: this.userId }).select("_id");
+            if (!isFollowing) {
+                return false;
+            }
+            return true;
+        } catch (error: any) {
+            throw new ApiError(error?.message, error.status);
         }
     }
 
