@@ -58,9 +58,11 @@ class FollowUnfollowUser extends CheckUser {
                 FollowerandFolloweeDetails: followDetails
             })
     })
+    
 
     UnFollowuser = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
-        const tobeUnfollowedUser = req.params;
+
+        const tobeUnfollowedUser = req.params; //getting the user id whome user want to unfollow 
         if (!tobeUnfollowedUser) {
             throw new ApiError("The ID of the user to unfollow is required", 400);
         }
@@ -69,9 +71,11 @@ class FollowUnfollowUser extends CheckUser {
         if (!currentUser) {
             throw new ApiError("please login as user is not attached to req object", 409);
         }
-        const checkProfile = new CheckProfile(currentUser.id);
+        const checkProfile = new CheckProfile(currentUser.id);  //instantiating the checkprofile class 
+
         const isFollowing: boolean = await checkProfile.followCheck();
-        console.log()
+        // accessing the followcheck method of the check profile class to check before unfloowingthe user that use is following the user or not
+
         if (!isFollowing) {
             throw new ApiError("You are not following this user", 409);
         }
@@ -79,7 +83,7 @@ class FollowUnfollowUser extends CheckUser {
         const unFollowedUser = await this.followModel.findOneAndDelete({
             followerId: currentUser._id,
             followeeId: tobeUnfollowedUser.tobeUnFollowedId,
-        }).populate("followeeId").select("-_id followeeId");
+        }).populate("followeeId").select("-_id followeeId"); //unfollowing the user and getting the unfollowed user detail
 
         if (!unFollowedUser) {
             throw new ApiError("Error occurred while unfollowing the user", 409);
