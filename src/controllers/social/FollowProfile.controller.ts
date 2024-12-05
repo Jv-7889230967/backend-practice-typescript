@@ -7,8 +7,9 @@ import { ApiError } from "../../utils/ApiError";
 import { UserType } from "../../../types/user";
 import { CheckUser } from "../../services/user/CheckUser";
 import { CheckProfile } from "../../services/social/CheckProfile";
+import { GetProfileByUser } from "../../services/social/ProfileByUser";
 
-class FollowUnfollowUser extends CheckUser {
+class Followers extends CheckUser {
     followModel: typeof SocialFollow;
     constructor(followModel: typeof SocialFollow) {
         super(null);
@@ -58,11 +59,10 @@ class FollowUnfollowUser extends CheckUser {
                 FollowerandFolloweeDetails: followDetails
             })
     })
-    
+
 
     UnFollowuser = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
-
-        const tobeUnfollowedUser = req.params; //getting the user id whome user want to unfollow 
+        const tobeUnfollowedUser = req.params; //getting the user id whome user want to unfollowx
         if (!tobeUnfollowedUser) {
             throw new ApiError("The ID of the user to unfollow is required", 400);
         }
@@ -95,6 +95,31 @@ class FollowUnfollowUser extends CheckUser {
                 unFollowedUser: unFollowedUser
             })
     })
+
+    getFollowersByUserName = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
+        try {
+            const { userName } = req.body;
+            if (!userName) {
+                throw new ApiError("user field is required", 400);
+            }
+
+            const profileByuser = new GetProfileByUser("username", userName as keyof UserType);
+            const profile = await profileByuser.getFollowers();
+
+
+            if (!profile) {
+                throw new ApiError("profile not found", 404);
+            }
+            return res.
+                status(200)
+                .json({
+                    message: "profile details feched successfully",
+                    User_Data: profile
+                })
+        } catch (error: any) {
+            throw new ApiError(error?.message, error?.code);
+        }
+    })
 }
 
-export const userFollowUnfollow = new FollowUnfollowUser(SocialFollow)
+export const FollowersService = new Followers(SocialFollow);
