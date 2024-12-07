@@ -7,8 +7,8 @@ import { SocialFollow } from "../../models/social/follow.model";
 
 
 export class CheckProfile {
-    userId: ObjectId;
-    constructor(userId: ObjectId) {
+    userId: ObjectId | null;
+    constructor(userId: ObjectId | null) {
         this.userId = userId;
     }
     getProfile = async (): Promise<ProfileType | null> => {

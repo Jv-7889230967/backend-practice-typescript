@@ -9,7 +9,7 @@ import { CheckUser } from "../../services/user/CheckUser";
 import { CheckProfile } from "../../services/social/CheckProfile";
 import { GetProfileByUser } from "../../services/social/ProfileByUser";
 
-class Followers extends CheckUser {
+class Followers extends CheckProfile {
     followModel: typeof SocialFollow;
     constructor(followModel: typeof SocialFollow) {
         super(null);
@@ -26,11 +26,11 @@ class Followers extends CheckUser {
         if (!currentUser) {
             throw new ApiError("please login as user is not attached to req object", 409);
         }
-        const getCurrentUser = new CheckUser(currentUser?._id);
-        const userExists = await getCurrentUser.checkUser();
+        const getCurrentUser = new CheckProfile(currentUser?._id);
+        const profileExists = await getCurrentUser.checkProfile();
 
-        if (!userExists) {  //checking if user who want's to follow exists or not 
-            throw new ApiError("logged-in user not found", 404);
+        if (!profileExists) {
+            throw new ApiError("Please create a Social profile to follow a user", 404);
         }
 
         const tobeFollowedExists = await User.findById(tobeFollowedUser.tobeFollowedId); //checing if tobeFollowed user exists or not
@@ -104,17 +104,14 @@ class Followers extends CheckUser {
             }
 
             const profileByuser = new GetProfileByUser("username", userName as keyof UserType);
-            const profile = await profileByuser.getFollowers();
+            const followers = await profileByuser.getFollowers();
 
 
-            if (!profile) {
-                throw new ApiError("profile not found", 404);
-            }
             return res.
                 status(200)
                 .json({
                     message: "profile details feched successfully",
-                    User_Data: profile
+                    FollowersList: followers.length > 0 ? followers : "Nobody follows this user",
                 })
         } catch (error: any) {
             throw new ApiError(error?.message, error?.code);

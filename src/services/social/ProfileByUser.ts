@@ -23,6 +23,20 @@ interface userProfile {
         email: string
     }
 }
+interface followerList {
+    profile: [
+        {
+            Bio: string,
+            Location: string,
+            CoverImage: {
+                url: string,
+                localPath: string,
+            }
+        }
+    ],
+    username: string,
+    email: string
+}
 
 
 export class GetProfileByUser {
@@ -101,9 +115,8 @@ export class GetProfileByUser {
         }
     }
 
-    getFollowers = async (): Promise<any> => {
+    getFollowers = async (): Promise<followerList[]> => {
         const userProfile: userProfile = await this.getProfilebyUser();
-        console.log(userProfile?.userData);
 
         const followersList = await SocialFollow.aggregate([
             {
@@ -117,55 +130,59 @@ export class GetProfileByUser {
                     localField: "followerId",
                     foreignField: "_id",
                     as: "follower",
+                    pipeline: [
+
+                        {
+                            $lookup: {
+                                from: "socialprofiles",
+                                localField: "_id",
+                                foreignField: "owner",
+                                as: "profile",
+                            },
+                        },
+                        {
+                            $match: {
+                                "profile": { $ne: [] }    //checking for empty profile are not included in results
+                            }
+                        },
+                        {
+                            $unwind: {    //unwinding the returned profile array for further processing 
+                                path: "$profile",
+                                preserveNullAndEmptyArrays: true
+                            }
+                        },
+                        {
+                            $addFields: {     //adding the profile document fields response
+                                Bio: "$profile.bio",
+                                Location: "$profile.location",
+                                CoverImage: "$profile.coverImage",
+                            },
+                        },
+                        {
+                            $project: {  //profection only necessary fields from all the documents
+                                _id: 0,
+                                UserName: "$username",
+                                Email: "$email",
+                                Bio: 1,
+                                Location: 1,
+                                CoverImage: 1,
+                            },
+                        },
+                    ]
                 },
             },
             {
                 $unwind: {
                     path: "$follower",
-                    preserveNullAndEmptyArrays: true,
-                },
+                }
             },
             {
-                $lookup: {
-                    from: "socialprofiles",
-                    localField: "follower._id",
-                    foreignField: "owner",
-                    as: "follower.followerprofile",
+                $replaceRoot: {
+                    newRoot: "$follower",
                 },
-            },
-            {
-                $addFields: {
-                    followerprofile: {
-                        $ifNull: [
-                            {
-                                $map: {
-                                    input: "$follower.followerprofile",
-                                    as: "profile",
-                                    in: {
-                                        username: "$follower.username",
-                                        Bio: "$$profile.bio",
-                                        Location: "$$profile.location",
-                                        CoverImage: "$$profile.coverImage",
-                                    }
-                                }
-                            },
-                            "follower not found for this user",
-                        ],
-                    },
-                },
-            },
-            {
-                $project: {
-                    _id: 0,
-                    followerprofile: 1,
-                },
-            },
+            }
         ]);
 
-        if (!followersList || followersList.length === 0) {
-            console.log("No followers found");
-            return { message: "No followers found for this user" };
-        }
         return followersList;
     };
 

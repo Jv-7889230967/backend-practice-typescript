@@ -9,6 +9,7 @@ export class CheckUser {
     }
     async checkUser(): Promise<boolean> {
         const userExists = User.findById(this.userId).select("_id");
+        
         if (!userExists) {
             return false;
         }
