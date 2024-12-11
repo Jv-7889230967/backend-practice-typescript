@@ -9,7 +9,7 @@ export const attachUserToRequest = (req: Request, user: UserType): void => {
 };
 
 // Retrieve the user from the request object
-export const getUserFromRequest = (req: Request): UserType | undefined => {
+export const getUserFromRequest = (req: Request): UserType => {
     // @ts-ignore
     return req.user;
 };

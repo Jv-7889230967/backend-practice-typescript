@@ -18,7 +18,7 @@ class UserController extends SendMessage {
         super(0, "");  //sending default value for sendMessage class constructor
         this.UserModel = UserModel;
     }
-    async generateAccessRefreshToken(userId: mongoose.Schema.Types.ObjectId | undefined): Promise<{ access_token: string | undefined, refresh_token: string | undefined }> {
+    async generateAccessRefreshToken(userId: mongoose.Types.ObjectId | undefined): Promise<{ access_token: string | undefined, refresh_token: string | undefined }> {
         try {
             const user: UserType | null = await this.UserModel.findById(userId);
             if (!user) {
@@ -110,7 +110,7 @@ class UserController extends SendMessage {
             }
 
             const user: UserType | null = await this.UserModel.findOne({ phonenumber }).select("_id");
-            const userId: mongoose.Schema.Types.ObjectId | undefined = user?._id;
+            const userId: mongoose.Types.ObjectId | undefined = user?._id;
             if (!user) {
                 throw new ApiError("User not found", 404);
             }

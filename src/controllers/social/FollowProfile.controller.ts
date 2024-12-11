@@ -5,7 +5,6 @@ import { getUserFromRequest } from "../../utils/AttachUser";
 import { User } from "../../models/auth/UserModels";
 import { ApiError } from "../../utils/ApiError";
 import { UserType } from "../../../types/user";
-import { CheckUser } from "../../services/user/CheckUser";
 import { CheckProfile } from "../../services/social/CheckProfile";
 import { GetProfileByUser } from "../../services/social/ProfileByUser";
 
@@ -22,7 +21,7 @@ class Followers extends CheckProfile {
         if (!tobeFollowedUser) {
             throw new ApiError("followee id is required", 400);
         }
-        const currentUser: UserType | undefined = getUserFromRequest(req);
+        const currentUser: UserType = getUserFromRequest(req);
         if (!currentUser) {
             throw new ApiError("please login as user is not attached to req object", 409);
         }
@@ -102,10 +101,9 @@ class Followers extends CheckProfile {
             if (!userName) {
                 throw new ApiError("user field is required", 400);
             }
-
+            const currentUser: UserType = getUserFromRequest(req);
             const profileByuser = new GetProfileByUser("username", userName as keyof UserType);
-            const followers = await profileByuser.getFollowers();
-
+            const followers = await profileByuser.getFollowers(currentUser);
 
             return res.
                 status(200)

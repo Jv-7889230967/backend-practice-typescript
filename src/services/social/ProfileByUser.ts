@@ -106,84 +106,201 @@ export class GetProfileByUser {
                 },
             ]);
 
-            if (!userProfile) {
-                throw new ApiError("user profile not found", 404);
+            if (!userProfile || userProfile.length === 0) {
+                throw new ApiError("User profile not found", 404);
             }
             return userProfile[0];
         } catch (error: any) {
-            throw new ApiError(error.message, error.status);
+            return error
         }
     }
 
-    getFollowers = async (): Promise<followerList[]> => {
-        const userProfile: userProfile = await this.getProfilebyUser();
+    getFollowers = async (currentUser: UserType): Promise<followerList[] | string> => {
+        try {
 
-        const followersList = await SocialFollow.aggregate([
+            const userProfile: userProfile = await this.getProfilebyUser();
+            const isFollowing = await this.CheckifFollower(currentUser?.username, this.userField);
+            // if (!isFollowing?.followerDetails) {
+            //     return "User not following this user"
+            // }
+
+            const followersList = await SocialFollow.aggregate([
+                {
+                    $match: {
+                        followeeId: new mongoose.Types.ObjectId(userProfile?.userData?.id),
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "followerId",
+                        foreignField: "_id",
+                        as: "follower",
+                        pipeline: [
+
+                            {
+                                $lookup: {
+                                    from: "socialprofiles",
+                                    localField: "_id",
+                                    foreignField: "owner",
+                                    as: "profile",
+                                },
+                            },
+                            {
+                                $match: {
+                                    "profile": { $ne: [] }    //checking for empty profile are not included in results
+                                }
+                            },
+                            {
+                                $lookup: {     //checking if curret loggedin user follows the looked up user or not
+                                    from: "socialfollows",
+                                    localField: "_id",
+                                    foreignField: "followerId",
+                                    as: "isFollowing",
+                                    pipeline: [
+                                        {
+                                            $match: {
+                                                followerId: currentUser?._id,
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                $unwind: {    //unwinding the returned profile array for further processing 
+                                    path: "$profile",
+                                    preserveNullAndEmptyArrays: true
+                                }
+                            },
+                            {
+                                $addFields: {     //adding the profile document fields response
+                                    Bio: "$profile.bio",
+                                    Location: "$profile.location",
+                                    CoverImage: "$profile.coverImage",
+                                    isFollowing: {
+                                        $cond: {   //while adding the field adding the $cond operator to check if the returned document size is gte 1 and return just boolean value instead of whole document
+                                            if: {
+                                                $gte: [
+                                                    {
+                                                        $size: "$isFollowing"
+                                                    },
+                                                    1
+                                                ],
+                                            },
+                                            then: true,
+                                            else: false,
+                                        }
+                                    }
+                                },
+                            },
+                            {
+                                $project: {  //projecting only necessary fields from all the documents
+                                    _id: 0,
+                                    isFollowing: 1,
+                                    UserName: "$username",
+                                    Email: "$email",
+                                    Bio: 1,
+                                    Location: 1,
+                                    CoverImage: 1,
+                                },
+                            },
+                        ]
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$follower",
+                    }
+                },
+                {
+                    $replaceRoot: {
+                        newRoot: "$follower",
+                    },
+                }
+            ]);
+
+            return followersList;
+        } catch (error: any) {
+            return error;
+        }
+    };
+
+    CheckifFollower = async (userName1: string, userName2: string): Promise<{ followerDetails: boolean }> => {
+
+        const isFollowing = await User.aggregate([
             {
                 $match: {
-                    followeeId: new mongoose.Types.ObjectId(userProfile?.userData?.id),
-                },
+                    username: userName2,
+                }
             },
             {
                 $lookup: {
-                    from: "users",
-                    localField: "followerId",
-                    foreignField: "_id",
-                    as: "follower",
+                    from: "socialfollows",
+                    localField: "_id",
+                    foreignField: "followeeId",
+                    as: "isFollowing",
                     pipeline: [
-
                         {
                             $lookup: {
-                                from: "socialprofiles",
-                                localField: "_id",
-                                foreignField: "owner",
-                                as: "profile",
-                            },
+                                from: "users",
+                                localField: "followerId",
+                                foreignField: "_id",
+                                as: "followerDetails",
+
+                            }
                         },
                         {
                             $match: {
-                                "profile": { $ne: [] }    //checking for empty profile are not included in results
+                                "followerDetails.username": userName1
                             }
                         },
                         {
-                            $unwind: {    //unwinding the returned profile array for further processing 
-                                path: "$profile",
-                                preserveNullAndEmptyArrays: true
+                            $addFields: {
+                                followerDetails: {
+                                    $cond: {
+                                        if: {
+                                            $gte: [
+                                                {
+                                                    $size: "$followerDetails"
+                                                },
+                                                1
+                                            ]
+                                        },
+                                        then: true,
+                                        else: false,
+                                    }
+                                }
                             }
                         },
                         {
-                            $addFields: {     //adding the profile document fields response
-                                Bio: "$profile.bio",
-                                Location: "$profile.location",
-                                CoverImage: "$profile.coverImage",
-                            },
+                            $unwind: {
+                                path: "$followerDetails",
+                                preserveNullAndEmptyArrays: true,
+                            }
                         },
                         {
-                            $project: {  //profection only necessary fields from all the documents
+                            $project: {
                                 _id: 0,
-                                UserName: "$username",
-                                Email: "$email",
-                                Bio: 1,
-                                Location: 1,
-                                CoverImage: 1,
-                            },
-                        },
+                                followerDetails: 1,
+                            }
+                        }
                     ]
-                },
+                }
             },
             {
                 $unwind: {
-                    path: "$follower",
+                    path: "$isFollowing"
                 }
             },
             {
                 $replaceRoot: {
-                    newRoot: "$follower",
-                },
+                    newRoot: "$isFollowing"
+                }
             }
-        ]);
 
-        return followersList;
-    };
+        ])
+
+        return isFollowing[0];
+    }
 
 }

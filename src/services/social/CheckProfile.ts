@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose"
+import mongoose, { ObjectId } from "mongoose"
 import { ProfileType } from "../../../types/profile";
 import { ApiError } from "../../utils/ApiError";
 import { SocialProfile } from "../../models/social/profile.model";
@@ -7,8 +7,8 @@ import { SocialFollow } from "../../models/social/follow.model";
 
 
 export class CheckProfile {
-    userId: ObjectId | null;
-    constructor(userId: ObjectId | null) {
+    userId: mongoose.Types.ObjectId | null;
+    constructor(userId: mongoose.Types.ObjectId | null) {
         this.userId = userId;
     }
     getProfile = async (): Promise<ProfileType | null> => {
