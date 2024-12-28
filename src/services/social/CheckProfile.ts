@@ -1,4 +1,4 @@
-import mongoose, { ObjectId } from "mongoose"
+import mongoose from "mongoose"
 import { ProfileType } from "../../../types/profile";
 import { ApiError } from "../../utils/ApiError";
 import { SocialProfile } from "../../models/social/profile.model";

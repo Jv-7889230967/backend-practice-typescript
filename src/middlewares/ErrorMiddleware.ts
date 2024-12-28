@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../utils/ApiError';
+import { MulterError } from 'multer';
 
 export const errorHandler = (
-  err: ApiError | Error,
+  err: ApiError | MulterError | Error,
   req: Request,
   res: Response,
   next: NextFunction
@@ -13,6 +14,13 @@ export const errorHandler = (
       message: err.message,
       errors: err.errors,
     });
+  }
+  else if (err instanceof MulterError) {
+    res.status(400).json({
+      success: false,
+      ErrorType: err.code,
+      message: `Multer Error Occurred:${err.message}`
+    })
   }
 
   else {

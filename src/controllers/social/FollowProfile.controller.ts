@@ -104,7 +104,7 @@ class Followers extends CheckProfile {
             const currentUser: UserType = getUserFromRequest(req);
             const profileByuser = new GetProfileByUser("username", userName as keyof UserType);
             const followers = await profileByuser.getFollowers(currentUser);
-
+            console.log(followers)
             return res.
                 status(200)
                 .json({
