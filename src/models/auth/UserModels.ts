@@ -92,7 +92,7 @@ userSchema.methods.generateRefresh_token = function () {   // method to generate
     },
         refresh_token_secret,
         {
-            expiresIn: '1d'
+            expiresIn: '5d'
         });
 }
 

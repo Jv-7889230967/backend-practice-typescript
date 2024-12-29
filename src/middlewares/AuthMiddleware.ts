@@ -14,14 +14,15 @@ export const authMiddleware = asyncHandler(async (req: Request, res: Response, n
     }
 
     const access_token_secret: string | undefined = process.env.JWT_ACCESS_TOKEN_SECRET;
-    // console.log("secret",secret);
-    if (!access_token_secret) {
-        throw new ApiError("JWT access token secret is not defined", 401);
+    const refresh_token_secret: string | undefined = process.env.JWT_REFRESH_TOKEN_SECRET;
+
+    if (!access_token_secret || !refresh_token_secret) {
+        throw new ApiError("JWT access or refresh token secret is not defined", 401);
     }
 
     try {
         const userValue = jwt.verify(token, access_token_secret) as JwtPayload;
-        const user: UserType | null = await User.findById(userValue._id).select("-refreshtoken");
+        const user: UserType | null = await User.findById(userValue._id);
         if (!user) {
             throw new ApiError("Invalid access token", 401);
         }
@@ -30,6 +31,27 @@ export const authMiddleware = asyncHandler(async (req: Request, res: Response, n
 
         next();
     } catch (error: any) {
-        throw new ApiError(error.message || "Invalid access token", 401);
+        if (error?.name === "TokenExpiredError") {
+            try {
+                const refreshToken = req?.cookies?.refresh_token;
+                const userValue = jwt.verify(refreshToken, refresh_token_secret) as JwtPayload;
+                const user: UserType | null = await User.findById(userValue._id);
+                if (!user) {
+                    throw new ApiError("Invalid access token", 401);
+                }
+                if (refreshToken === user?.refreshtoken) {
+                    const access_token: string | undefined = user?.generateAccess_token();
+                    res.cookie("access_token", access_token, { httpOnly: true, secure: true })
+                    console.log("jdnfkjdjfnj")
+                    attachUserToRequest(req, user);
+                    next();
+                }
+            } catch (error: any) {
+                throw new ApiError(error?.message || "failed to login using refresh token", 401)
+            }
+        }
+        else {
+            throw new ApiError(error.message || "Invalid access token", 401);
+        }
     }
 });

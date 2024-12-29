@@ -8,15 +8,16 @@ import followRouter from "./Routes/social/SocialFollowers";
 import postRouter from "./Routes/social/SocialPost";
 import likeRouter from "./Routes/social/SocialLike";
 import commentRouter from "./Routes/social/SocialComment";
+import cookieParser from "cookie-parser";
+
 
 configDotenv();
 
 const app = express();
 
 connectDB(); // calling the DB connect function here
-
+app.use(cookieParser());
 app.use(express.json());
-
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/social", profileRouter, followRouter, postRouter, likeRouter, commentRouter);
 
