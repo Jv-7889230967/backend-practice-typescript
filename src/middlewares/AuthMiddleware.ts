@@ -42,7 +42,6 @@ export const authMiddleware = asyncHandler(async (req: Request, res: Response, n
                 if (refreshToken === user?.refreshtoken) {
                     const access_token: string | undefined = user?.generateAccess_token();
                     res.cookie("access_token", access_token, { httpOnly: true, secure: true })
-                    console.log("jdnfkjdjfnj")
                     attachUserToRequest(req, user);
                     next();
                 }

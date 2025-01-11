@@ -47,6 +47,7 @@ class PostController {
     })
     getSocialPost = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
         const currentUser = getUserFromRequest(req);
+        console.log("current user",currentUser?.username);
 
         const postServices = new PostServcies();
         const posts = await postServices.getPostbyUsername(currentUser?.username);

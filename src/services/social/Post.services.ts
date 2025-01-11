@@ -43,7 +43,7 @@ export class PostServcies {
                                                     {
                                                         $group: {
                                                             _id: "$commentId",
-                                                            replyCount: { $sum: 1 } 
+                                                            replyCount: { $sum: 1 }
                                                         }
                                                     },
                                                     {

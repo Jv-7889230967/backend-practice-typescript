@@ -9,13 +9,21 @@ import postRouter from "./Routes/social/SocialPost";
 import likeRouter from "./Routes/social/SocialLike";
 import commentRouter from "./Routes/social/SocialComment";
 import cookieParser from "cookie-parser";
-
+import { Server } from "socket.io";
+import { createServer } from "http";
+import { intializeSocket } from "./socket";
 
 configDotenv();
 
 const app = express();
 
 connectDB(); // calling the DB connect function here
+
+const server = createServer(app);
+
+const io = new Server(server);
+
+intializeSocket(io);
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/v1/users", userRouter);
@@ -24,6 +32,6 @@ app.use("/api/v1/social", profileRouter, followRouter, postRouter, likeRouter, c
 
 app.use(errorHandler);
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`Server running at ${process.env.PORT}`);
 });
