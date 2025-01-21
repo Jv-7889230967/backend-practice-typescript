@@ -47,17 +47,17 @@ class PostController {
     })
     getSocialPost = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
         const currentUser = getUserFromRequest(req);
-        console.log("current user",currentUser?.username);
+        const { page, limit } = req.body;
 
         const postServices = new PostServcies();
-        const posts = await postServices.getPostbyUsername(currentUser?.username);
+        const posts = await postServices.getPostbyUsername(currentUser?.username, page, limit);
 
         return res
-        .status(200)
-        .json({
-            message:"your posts are fetched",
-            posts:posts
-        })
+            .status(200)
+            .json({
+                message: "your posts are fetched",
+                posts: posts
+            })
     })
 }
 export const postController = new PostController();

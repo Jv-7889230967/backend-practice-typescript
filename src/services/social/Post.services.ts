@@ -3,8 +3,9 @@ import { ApiError } from "../../utils/ApiError"
 
 
 export class PostServcies {
-    getPostbyUsername = async (username: string): Promise<any> => {
+    getPostbyUsername = async (username: string, page: number = 1, limit: number = 10): Promise<any> => {
         try {
+            const skip: number = (page - 1) * limit;
             const userPosts = await User.aggregate([
                 {
                     $match: {
@@ -110,6 +111,12 @@ export class PostServcies {
                     $replaceRoot: {
                         newRoot: "$posts",
                     }
+                },
+                {
+                    $skip: skip ?? 0,
+                },
+                {
+                    $limit: limit ?? 10,
                 }
             ])
             return userPosts;

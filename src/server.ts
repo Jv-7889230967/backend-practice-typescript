@@ -11,24 +11,23 @@ import commentRouter from "./Routes/social/SocialComment";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { intializeSocket } from "./socket";
+import { initializeSocket } from "./socket";
+// import { intializeSocket } from "./socket";
 
 configDotenv();
-
 const app = express();
 
 connectDB(); // calling the DB connect function here
-
+// connectRedis();
 const server = createServer(app);
 
 const io = new Server(server);
 
-intializeSocket(io);
+initializeSocket(io);
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/social", profileRouter, followRouter, postRouter, likeRouter, commentRouter);
-
 
 app.use(errorHandler);
 

@@ -73,9 +73,9 @@ class CommentController extends CommentServices {
 
     getCommentReplies = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
         try {
-            const { commentId } = req.body;
+            const { commentId, page, limit } = req.body;
             const getCommentReplies = new CommentServices();
-            const replies = await getCommentReplies.getReplies(commentId);
+            const replies = await getCommentReplies.getReplies(commentId, page, limit);
 
             return res
                 .status(200)

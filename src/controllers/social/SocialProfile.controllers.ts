@@ -51,7 +51,7 @@ class SocialProfileController extends SendMessage {
 
     })
 
-    
+
     /**
      * @param req object to get the currnt user id
      * @description function to get the social profile of the logged in user.
@@ -63,8 +63,8 @@ class SocialProfileController extends SendMessage {
         if (!profile) {
             throw new ApiError("Social Profile does not exists", 404);
         }
-        return res.status(201).json({
-            message: "your socila profil",
+        return res.status(200).json({
+            message: "your social profil",
             profile: profile
         })
     })

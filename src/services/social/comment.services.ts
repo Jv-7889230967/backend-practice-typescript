@@ -4,7 +4,8 @@ import { commentType } from "../../../types/comment";
 
 
 export class CommentServices {
-    getReplies = async (commentId: string): Promise<commentType[]> => {
+    getReplies = async (commentId: string, page: number, limit: number): Promise<commentType[]> => {
+        const offset: number = (page - 1) * limit;
         const replies = await commentModal.aggregate([
             {
                 $match: {
@@ -18,6 +19,12 @@ export class CommentServices {
                     commentId: 1,
                     author: 1,
                 }
+            },
+            {
+                $skip: offset ?? 0
+            },
+            {
+                $limit: limit ?? 10
             }
         ])
         return replies;
