@@ -1,10 +1,10 @@
-import { ObjectId } from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import { User } from "../../models/auth/UserModels";
 
 
 export class CheckUser {
-    userId: ObjectId | null;
-    constructor(userId: ObjectId | null) {
+    userId: mongoose.Types.ObjectId | null;
+    constructor(userId: mongoose.Types.ObjectId | null) {
         this.userId = userId;
     }
     async checkUser(): Promise<boolean> {

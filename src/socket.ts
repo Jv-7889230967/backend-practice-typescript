@@ -1,51 +1,77 @@
 import { Server, Socket } from "socket.io";
+import { Request } from "express";
 import { activeUsers } from "./utils/TemporaryStorage";
 import { getCurrentUser } from "./services/shared/getCurrentUser";
 import { jwtUser } from "../types/jwt";
+import { UserType } from "../types/user";
+import { User } from "./models/auth/UserModels";
+
+interface authenticatedSocket extends Socket {
+    user?: UserType | null;
+}
 
 export const initializeSocket = (io: Server) => { // Accept a `Server` instance
-    
-    io.on("connection", (socket: Socket) => { // Handle new connections
-        const userRoom = `user_${socket.id}`;
-        socket.join(userRoom);
+
+    io.on("connection", async (socket: authenticatedSocket) => { // Handle new connections
         const auth_token: string | string[] | undefined = socket?.handshake?.headers?.authentication;
         const currentUser: jwtUser | null = getCurrentUser(auth_token);
         if (currentUser?.username) {
-            activeUsers.set(currentUser.username, userRoom);
-            console.log("New user connected-currently active users", activeUsers);
+            const user: UserType | null = await User.findById(currentUser?._id).select("-passsword -refreshtoken -createdAt -updatedAt");
+            const userId: string | undefined = user?._id ? user._id.toString() : undefined;
+            activeUsers.set(currentUser.username, userId);
+            if (userId) {
+                socket.join(userId);
+            }
+            socket.user = user;
+            joinChat(socket); //mounting the join chat event when a user connects to the socket
+
         } else {
             console.log("Failed to get current user");
         }
 
-        socket.on("privateMessage", ({ messageTo, message, senderName }) => {
-            const messageto: string | undefined = activeUsers.get(messageTo);
-            console.log("message to room", messageto);
-            if (messageto) {
-                console.log(`Sending message to room: ${messageto}`);
-                socket.to(messageto).emit("messageEvent", {
-                    from: senderName,
-                    message: message
-                });
-                console.log("Entered private message function");
-            } else {
-                console.log(`User ${messageTo} not found in active users`);
-            }
-        });
+        // socket.on("privateMessage", ({ messageTo, message, senderName }) => {
+        //     const messageto: string | undefined = activeUsers.get(messageTo);
+        //     console.log("message to room", messageto);
+        //     if (messageto) {
+        //         console.log(`Sending message to room: ${messageto}`);
+        //         socket.to(messageto).emit("messageEvent", {
+        //             from: senderName,
+        //             message: message
+        //         });
+        //         console.log("Entered private message function");
+        //     } else {
+        //         console.log(`User ${messageTo} not found in active users`);
+        //     }
+        // });
 
-        socket.on("messageEvent", ({ from, message }) => {
-            console.log("Entered message event");
-            console.log("New message from ", {
-                from: from,
-                message: message
-            });
-        });
+        // socket.on("sendMessage", (data) => {
+        //     console.log("Entered message event");
+        //     console.log("New message from ", data);
+        // });
 
         socket.on("disconnect", () => {
             console.log("User disconnected", socket.id);
             if (currentUser?.username) {
                 activeUsers.delete(currentUser.username);
-                console.log("Updated active users", activeUsers);
+                if (socket?.user?._id) {
+                    socket.leave(socket.user._id.toString());  //leaving teh socket room when user disconnected
+                }
             }
         });
     });
+};
+
+export const joinChat = (socket: Socket) => {    //function to a join a chat weather a one on one or group chat
+    socket.on("joinchat", ({ chatId }) => {
+        socket.join(chatId);
+    })
+}
+
+export const emitSocketEvent = (req: Request, roomId: string, event: string, payload: string) => {
+    const io = req.app.get("io") as Server | undefined; // Ensure io is recognized
+    if (!io) {
+        console.error("Socket.io instance is not available on req.app");
+        return;
+    }
+    io.in(roomId).emit(event, payload);
 };
