@@ -15,8 +15,8 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
 
-    const allowedExt: RegExp = /png|jpg|jpeg/;
-    const allowedMimeTypes: string[] = ["image/jpeg", "image/jpg", "image/png", 'video/mp4', 'video/webm', 'video/avi'];
+    const allowedExt: RegExp = /png|jpg|jpeg|pdf/;
+    const allowedMimeTypes: string[] = ["image/jpeg", "image/jpg", "image/png", 'video/mp4', 'video/webm', 'video/avi','application/pdf'];
     const isFileExtAllowed: boolean = allowedExt.test(file.originalname.toLowerCase());
     const fileType: boolean = allowedMimeTypes.includes(file.mimetype);
 

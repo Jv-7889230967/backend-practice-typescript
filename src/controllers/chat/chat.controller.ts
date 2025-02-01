@@ -16,8 +16,8 @@ class ChatController {
 
     CreateorGetChat = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
         try {
-            console.log("req object",req.app.get("io"));
             const { receiverId } = req.params;
+            const { page, limit } = req.query;
             const currentUser = getUserFromRequest(req);
             const checkUSer = new CheckUser(new mongoose.Types.ObjectId(receiverId));
 
@@ -27,11 +27,11 @@ class ChatController {
                 throw new ApiError("the receiver you want to chat with does not exist", 404);
             }
 
-            const perviousChat = await this.chatService.getPreviousChat([currentUser?._id.toString(), receiverId]);
+            const perviousChat = await this.chatService.getPreviousChat([currentUser?._id.toString(), receiverId], Number(page), Number(limit));
             if (perviousChat.length > 0) {
                 return res.status(200).json({
                     message: "chat retreived successfully",
-                    chat: perviousChat,
+                    chat: perviousChat[0],
                 })
             }
             else {

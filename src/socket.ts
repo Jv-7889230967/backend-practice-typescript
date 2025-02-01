@@ -29,26 +29,6 @@ export const initializeSocket = (io: Server) => { // Accept a `Server` instance
             console.log("Failed to get current user");
         }
 
-        // socket.on("privateMessage", ({ messageTo, message, senderName }) => {
-        //     const messageto: string | undefined = activeUsers.get(messageTo);
-        //     console.log("message to room", messageto);
-        //     if (messageto) {
-        //         console.log(`Sending message to room: ${messageto}`);
-        //         socket.to(messageto).emit("messageEvent", {
-        //             from: senderName,
-        //             message: message
-        //         });
-        //         console.log("Entered private message function");
-        //     } else {
-        //         console.log(`User ${messageTo} not found in active users`);
-        //     }
-        // });
-
-        // socket.on("sendMessage", (data) => {
-        //     console.log("Entered message event");
-        //     console.log("New message from ", data);
-        // });
-
         socket.on("disconnect", () => {
             console.log("User disconnected", socket.id);
             if (currentUser?.username) {
@@ -67,7 +47,7 @@ export const joinChat = (socket: Socket) => {    //function to a join a chat wea
     })
 }
 
-export const emitSocketEvent = (req: Request, roomId: string, event: string, payload: string) => {
+export const emitSocketEvent = (req: Request, roomId: string, event: string, payload: { messageContent: string, attachments: string[] }) => {
     const io = req.app.get("io") as Server | undefined; // Ensure io is recognized
     if (!io) {
         console.error("Socket.io instance is not available on req.app");

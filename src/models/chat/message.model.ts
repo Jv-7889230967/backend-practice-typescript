@@ -10,17 +10,13 @@ const messageSchema = new Schema({
         type: String,
     },
     attachments: {
-        type: [
-            {
-                url: String,
-                localPath: String,
-            }
-        ],
+        type: [String],
         default: [],
     },
     chat: {
         type: Schema.Types.ObjectId,
-        ref: "chatModel"
+        ref: "chatModel",
+        index: true,
     }
 }, { timestamps: true })
 

@@ -5,6 +5,8 @@ import { ApiError } from "../../utils/ApiError";
 import { messageModel } from "../../models/chat/message.model";
 import { getUserFromRequest } from "../../utils/AttachUser";
 import { emitSocketEvent } from "../../socket";
+import { CloudUpload } from "../../services/social/CloudUpload";
+import { promises as fsPromises } from "fs";
 
 
 class MessageController {
@@ -14,21 +16,30 @@ class MessageController {
             const currentUser = getUserFromRequest(req);
             const { chatId } = req.params;
             const { messageBody } = req.body;
+            const chatAttachments = req.file;
 
+            const uploadedFileLink = await CloudUpload(chatAttachments?.path);
             const chatExists = await chatModel.findById(chatId);
             if (!chatExists) {
                 throw new ApiError("chat doesn't exists", 404);
             }
-
-            const message = await messageModel.create({
+            const attachments: string[] = [uploadedFileLink];
+            await messageModel.create({
                 sender: currentUser._id,
                 content: messageBody,
-                attachments: [],
+                attachments: attachments,
                 chat: chatId,
             })
 
-            emitSocketEvent(req, chatId, "sendMessage", messageBody);
+            const completePayload: { messageContent: string, attachments: string[] } = {
+                messageContent: messageBody,
+                attachments: attachments
+            }
 
+            emitSocketEvent(req, chatId, "sendMessage", completePayload);
+            if (chatAttachments?.path) {
+                await fsPromises.unlink(chatAttachments?.path);
+            }
             return res.status(200).json({
                 message: `send to chat ${chatId}`,
                 conversation: {
