@@ -1,8 +1,8 @@
 import mongoose from "mongoose"
-import { ProfileType } from "../../../types/profile";
-import { ApiError } from "../../utils/ApiError";
-import { SocialProfile } from "../../models/social/profile.model";
-import { SocialFollow } from "../../models/social/follow.model";
+import { ProfileType } from "../../../types/profile.js";
+import { ApiError } from "../../utils/ApiError.js";
+import { SocialProfile } from "../../models/social/profile.model.js";
+import { SocialFollow } from "../../models/social/follow.model.js";
 
 
 

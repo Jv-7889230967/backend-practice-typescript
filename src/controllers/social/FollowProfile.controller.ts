@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { SocialFollow } from "../../models/social/follow.model";
-import { asyncHandler } from "../../utils/AsyncHandler";
-import { getUserFromRequest } from "../../utils/AttachUser";
-import { User } from "../../models/auth/UserModels";
-import { ApiError } from "../../utils/ApiError";
-import { UserType } from "../../../types/user";
-import { CheckProfile } from "../../services/social/CheckProfile";
-import { GetProfileByUser } from "../../services/social/ProfileByUser";
+import { SocialFollow } from "../../models/social/follow.model.js";
+import { asyncHandler } from "../../utils/AsyncHandler.js";
+import { getUserFromRequest } from "../../utils/AttachUser.js";
+import { User } from "../../models/auth/UserModels.js";
+import { ApiError } from "../../utils/ApiError.js";
+import { UserType } from "../../../types/user.js";
+import { CheckProfile } from "../../services/social/CheckProfile.js";
+import { GetProfileByUser } from "../../services/social/ProfileByUser.js";
 
 class Followers extends CheckProfile {
     followModel: typeof SocialFollow;

@@ -1,19 +1,20 @@
 import express from "express";
-import profileRouter from "./Routes/social/SocialProfile"
-import { errorHandler } from "./middlewares/ErrorMiddleware";
-import connectDB from "./DB";
+import profileRouter from "./Routes/social/SocialProfile.js";
+import { errorHandler } from "./middlewares/ErrorMiddleware.js";
 import { configDotenv } from "dotenv";
-import userRouter from "./Routes/auth/UserRoutes";
-import followRouter from "./Routes/social/SocialFollowers";
-import postRouter from "./Routes/social/SocialPost";
-import likeRouter from "./Routes/social/SocialLike";
-import commentRouter from "./Routes/social/SocialComment";
-import chatRouter from "./Routes/chat/chats";
-import messageRouter from "./Routes/chat/message.routes"
+import userRouter from "./Routes/auth/UserRoutes.js";
+import followRouter from "./Routes/social/SocialFollowers.js";
+import postRouter from "./Routes/social/SocialPost.js";
+import likeRouter from "./Routes/social/SocialLike.js";
+import commentRouter from "./Routes/social/SocialComment.js";
+import chatRouter from "./Routes/chat/chats.js";
+import messageRouter from "./Routes/chat/message.routes.js";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { initializeSocket } from "./socket";
+import { initializeSocket } from "./socket.js";
+import connectDB from "./DB/index.js";
+
 
 configDotenv();
 const app = express();

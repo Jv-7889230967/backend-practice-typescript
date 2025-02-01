@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { SocialProfile } from "../../models/social/profile.model";
-import { asyncHandler } from "../../utils/AsyncHandler";
-import { getUserFromRequest } from "../../utils/AttachUser";
-import { ApiError } from "../../utils/ApiError";
-import { ProfileType } from "../../../types/profile";
-import { CheckProfile } from "../../services/social/CheckProfile";
-import { SendMessage } from "../../services/shared/SendMessage";
+import { SocialProfile } from "../../models/social/profile.model.js";
+import { asyncHandler } from "../../utils/AsyncHandler.js";
+import { getUserFromRequest } from "../../utils/AttachUser.js";
+import { ApiError } from "../../utils/ApiError.js";
+import { ProfileType } from "../../../types/profile.js";
+import { CheckProfile } from "../../services/social/CheckProfile.js";
+import { SendMessage } from "../../services/shared/SendMessage.js";
 
 
 class SocialProfileController extends SendMessage {

@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { asyncHandler } from "../../utils/AsyncHandler";
+import { asyncHandler } from "../../utils/AsyncHandler.js";
 import mongoose from "mongoose";
-import { ApiError } from "../../utils/ApiError";
-import { CloudUpload } from "../../services/social/CloudUpload";
-import { SocialPost } from "../../models/social/post.model";
-import { getUserFromRequest } from "../../utils/AttachUser";
+import { ApiError } from "../../utils/ApiError.js";
+import { CloudUpload } from "../../services/social/CloudUpload.js";
+import { SocialPost } from "../../models/social/post.model.js";
+import { getUserFromRequest } from "../../utils/AttachUser.js";
 import { promises as fsPromises } from "fs";
-import { PostServcies } from "../../services/social/Post.services";
+import { PostServcies } from "../../services/social/Post.services.js";
 
 class PostController {
     CreatePost = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {

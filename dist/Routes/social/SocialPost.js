@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const Post_controller_1 = require("../../controllers/social/Post.controller");
+const AuthMiddleware_1 = require("../../middlewares/AuthMiddleware");
+const MulterMiddleware_1 = require("../../middlewares/MulterMiddleware");
+const router = (0, express_1.Router)();
+router.use(AuthMiddleware_1.authMiddleware);
+router.route("/create-post").post(MulterMiddleware_1.upload.single('postContent'), Post_controller_1.postController.CreatePost);
+router.route("/get-my-posts").get(Post_controller_1.postController.getSocialPost);
+exports.default = router;

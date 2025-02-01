@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { UserType } from "../../../types/user";
-import { User } from "../../models/auth/UserModels";
-import { SocialFollow } from "../../models/social/follow.model";
-import { ApiError } from "../../utils/ApiError";
+import { UserType } from "../../../types/user.js";
+import { User } from "../../models/auth/UserModels.js";
+import { SocialFollow } from "../../models/social/follow.model.js";
+import { ApiError } from "../../utils/ApiError.js";
 
 
 interface userProfile {

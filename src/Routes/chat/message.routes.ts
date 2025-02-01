@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { authMiddleware } from "../../middlewares/AuthMiddleware";
-import { messageController } from "../../controllers/chat/message.controller";
-import { upload } from "../../middlewares/MulterMiddleware";
+import { authMiddleware } from "../../middlewares/AuthMiddleware.js";
+import { messageController } from "../../controllers/chat/message.controller.js";
+import { upload } from "../../middlewares/MulterMiddleware.js";
 
 
 const router = Router();

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import { User } from "../auth/UserModels";
-import { SocialPost } from "./post.model";
+import { User } from "../auth/UserModels.js";
+import { SocialPost } from "./post.model.js";
 
 
 const CommentSchema = new Schema({

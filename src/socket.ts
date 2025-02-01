@@ -1,10 +1,10 @@
 import { Server, Socket } from "socket.io";
 import { Request } from "express";
-import { activeUsers } from "./utils/TemporaryStorage";
-import { getCurrentUser } from "./services/shared/getCurrentUser";
-import { jwtUser } from "../types/jwt";
-import { UserType } from "../types/user";
-import { User } from "./models/auth/UserModels";
+import { activeUsers } from "./utils/TemporaryStorage.js";
+import { getCurrentUser } from "./services/shared/getCurrentUser.js";
+import { jwtUser } from "../types/jwt.d.js";
+import { UserType } from "../types/user.js";
+import { User } from "./models/auth/UserModels.js";
 
 interface authenticatedSocket extends Socket {
     user?: UserType | null;

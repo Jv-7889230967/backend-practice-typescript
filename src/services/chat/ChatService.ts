@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { chatModel } from "../../models/chat/chat.model";
+import { chatModel } from "../../models/chat/chat.model.js";
 
 export class chatService {
 

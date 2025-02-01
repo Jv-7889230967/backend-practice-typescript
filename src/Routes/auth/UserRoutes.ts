@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { userController } from "../../controllers/auth/AuthController";
-import { authMiddleware } from "../../middlewares/AuthMiddleware";
+import { userController } from "../../controllers/auth/AuthController.js";
+import { authMiddleware } from "../../middlewares/AuthMiddleware.js";
 import passport from "passport";
 // import GoogleStrategy from "passport-google-oidc";
 

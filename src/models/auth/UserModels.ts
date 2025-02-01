@@ -1,8 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { userRoleEnum } from "../../constants";
-import { ApiError } from "../../utils/ApiError";
+import { userRoleEnum } from "../../constants.js";
+import { ApiError } from "../../utils/ApiError.js";
 
 
 

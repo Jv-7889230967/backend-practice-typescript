@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { asyncHandler } from "../../utils/AsyncHandler";
-import { LikeModel } from "../../models/social/like.models";
-import { getUserFromRequest } from "../../utils/AttachUser";
-import { likeModal } from "../../../types/like";
+import { asyncHandler } from "../../utils/AsyncHandler.js";
+import { LikeModel } from "../../models/social/like.models.js";
+import { getUserFromRequest } from "../../utils/AttachUser.js";
+import { likeModal } from "../../../types/like.js";
 
 
 class LikeController {

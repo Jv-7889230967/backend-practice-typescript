@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { asyncHandler } from "../../utils/AsyncHandler";
-import { chatModel } from "../../models/chat/chat.model";
-import { ApiError } from "../../utils/ApiError";
-import { messageModel } from "../../models/chat/message.model";
-import { getUserFromRequest } from "../../utils/AttachUser";
-import { emitSocketEvent } from "../../socket";
-import { CloudUpload } from "../../services/social/CloudUpload";
+import { asyncHandler } from "../../utils/AsyncHandler.js";
+import { chatModel } from "../../models/chat/chat.model.js";
+import { ApiError } from "../../utils/ApiError.js";
+import { messageModel } from "../../models/chat/message.model.js";
+import { getUserFromRequest } from "../../utils/AttachUser.js";
+import { emitSocketEvent } from "../../socket.js";
+import { CloudUpload } from "../../services/social/CloudUpload.js";
 import { promises as fsPromises } from "fs";
 
 

@@ -1,5 +1,5 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { jwtUser } from "../../../types/jwt";
+import jwt from "jsonwebtoken";
+import { jwtUser } from "../../../types/jwt.js";
 
 export const getCurrentUser = (auth_token: string | string[] | undefined): jwtUser | null => {
     try {

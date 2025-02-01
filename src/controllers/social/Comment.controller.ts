@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { asyncHandler } from "../../utils/AsyncHandler";
-import { getUserFromRequest } from "../../utils/AttachUser";
-import { commentModal } from "../../models/social/comment.model";
-import { commentType } from "../../../types/comment";
-import { ApiError } from "../../utils/ApiError";
-import { CommentServices } from "../../services/social/comment.services";
+import { asyncHandler } from "../../utils/AsyncHandler.js";
+import { getUserFromRequest } from "../../utils/AttachUser.js";
+import { commentModal } from "../../models/social/comment.model.js";
+import { commentType } from "../../../types/comment.js";
+import { ApiError } from "../../utils/ApiError.js";
+import { CommentServices } from "../../services/social/comment.services.js";
 
 
 

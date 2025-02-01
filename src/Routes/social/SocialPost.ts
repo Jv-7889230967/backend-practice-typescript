@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { postController } from "../../controllers/social/Post.controller";
-import { authMiddleware } from "../../middlewares/AuthMiddleware";
-import { upload } from "../../middlewares/MulterMiddleware";
+import { postController } from "../../controllers/social/Post.controller.js";
+import { authMiddleware } from "../../middlewares/AuthMiddleware.js";
+import { upload } from "../../middlewares/MulterMiddleware.js";
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 // src/utils/authHelpers.ts
 import { Request } from "express";
-import { UserType } from "../../types/user";
+import { UserType } from "../../types/user.js";
 
 // Attach a user to the request object
 export const attachUserToRequest = (req: Request, user: UserType): void => {
