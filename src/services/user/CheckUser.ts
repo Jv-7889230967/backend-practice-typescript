@@ -1,5 +1,5 @@
 import mongoose, { ObjectId } from "mongoose";
-import { User } from "../../models/auth/UserModels.js";
+import { User } from "../../models/auth/UserModels";
 
 
 export class CheckUser {

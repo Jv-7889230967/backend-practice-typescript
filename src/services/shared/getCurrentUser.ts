@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { jwtUser } from "../../../types/jwt.js";
+import { jwtUser } from "../../../types/jwt";
 
 export const getCurrentUser = (auth_token: string | string[] | undefined): jwtUser | null => {
     try {

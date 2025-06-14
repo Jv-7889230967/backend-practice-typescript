@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { UserType } from "../../types/user.js";
-import { ApiError } from "../utils/ApiError.js";
+import { UserType } from "../../types/user";
+import { ApiError } from "../utils/ApiError";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { asyncHandler } from "../utils/AsyncHandler.js";
+import { asyncHandler } from "../utils/AsyncHandler";
 
-import { attachUserToRequest } from "../utils/AttachUser.js";
-import { User } from "../models/auth/UserModels.js";
+import { attachUserToRequest } from "../utils/AttachUser";
+import { User } from "../models/auth/UserModels";
 
 export const authMiddleware = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies?.access_token || req.header("Authorization")?.replace("Bearer ", "");

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { likeController } from "../../controllers/social/Like.controller.js";
-import { authMiddleware } from "../../middlewares/AuthMiddleware.js";
+import { likeController } from "../../controllers/social/Like.controller";
+import { authMiddleware } from "../../middlewares/AuthMiddleware";
 
 
 const router = Router();

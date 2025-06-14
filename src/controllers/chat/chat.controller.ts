@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { asyncHandler } from "../../utils/AsyncHandler.js";
-import { CheckUser } from "../../services/user/CheckUser.js";
+import { asyncHandler } from "../../utils/AsyncHandler";
+import { CheckUser } from "../../services/user/CheckUser";
 import mongoose from "mongoose";
-import { ApiError } from "../../utils/ApiError.js";
-import { chatModel } from "../../models/chat/chat.model.js";
-import { getUserFromRequest } from "../../utils/AttachUser.js";
-import { chatService } from "../../services/chat/ChatService.js";
+import { ApiError } from "../../utils/ApiError";
+import { chatModel } from "../../models/chat/chat.model";
+import { getUserFromRequest } from "../../utils/AttachUser";
+import { chatService } from "../../services/chat/ChatService";
 
 class ChatController {
     private chatService: chatService;  //injected chatService as a dependency

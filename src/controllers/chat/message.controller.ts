@@ -1,29 +1,30 @@
 import { NextFunction, Request, Response } from "express";
-import { asyncHandler } from "../../utils/AsyncHandler.js";
-import { chatModel } from "../../models/chat/chat.model.js";
-import { ApiError } from "../../utils/ApiError.js";
-import { messageModel } from "../../models/chat/message.model.js";
-import { getUserFromRequest } from "../../utils/AttachUser.js";
-import { emitSocketEvent } from "../../socket.js";
-import { CloudUpload } from "../../services/social/CloudUpload.js";
+import { asyncHandler } from "../../utils/AsyncHandler";
+import { chatModel } from "../../models/chat/chat.model";
+import { ApiError } from "../../utils/ApiError";
+import { messageModel } from "../../models/chat/message.model";
+import { getUserFromRequest } from "../../utils/AttachUser";
+import { emitSocketEvent } from "../../socket";
+import { CloudUpload } from "../../services/social/CloudUpload";
 import { promises as fsPromises } from "fs";
 
 
 class MessageController {
-
     sendMessage = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
         try {
             const currentUser = getUserFromRequest(req);
             const { chatId } = req.params;
             const { messageBody } = req.body;
             const chatAttachments = req.file;
-
-            const uploadedFileLink = await CloudUpload(chatAttachments?.path);
+            var attachments: string[] = [];
+            if (chatAttachments) {
+                const uploadedFileLink: string | undefined = await CloudUpload(chatAttachments?.path);
+                attachments = [uploadedFileLink];
+            }
             const chatExists = await chatModel.findById(chatId);
             if (!chatExists) {
                 throw new ApiError("chat doesn't exists", 404);
             }
-            const attachments: string[] = [uploadedFileLink];
             await messageModel.create({
                 sender: currentUser._id,
                 content: messageBody,

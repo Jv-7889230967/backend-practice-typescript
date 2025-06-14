@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { commentModal } from "../../models/social/comment.model.js";
-import { commentType } from "../../../types/comment.js";
+import { commentModal } from "../../models/social/comment.model";
+import { commentType } from "../../../types/comment";
 
 
 export class CommentServices {

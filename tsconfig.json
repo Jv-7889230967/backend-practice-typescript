@@ -6,7 +6,7 @@
       "types/**/*",
     ],
     "target": "es2016",
-    "module": "NodeNext",
+    "module": "commonjs",
     "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,

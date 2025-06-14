@@ -1,15 +1,15 @@
-import { userRoleEnum } from "../../constants.js";
-import { ApiError } from "../../utils/ApiError.js";
-import { asyncHandler } from "../../utils/AsyncHandler.js";
-import { generateOTP } from "../../utils/GenerateOTP.js";
-import { otpStore } from "../../utils/TemporaryStorage.js";
-import { User } from "../../models/auth/UserModels.js";
+import { userRoleEnum } from "../../constants";
+import { ApiError } from "../../utils/ApiError";
+import { asyncHandler } from "../../utils/AsyncHandler";
+import { generateOTP } from "../../utils/GenerateOTP";
+import { otpStore } from "../../utils/TemporaryStorage";
+import { User } from "../../models/auth/UserModels";
 import { Request, Response, NextFunction } from "express";
-import { UserType } from '../../../types/user.js';
+import { UserType } from '../../../types/user';
 import mongoose from "mongoose";
-import { authRequest } from "../../../types/express.js";
-import { getUserFromRequest } from "../../utils/AttachUser.js";
-import { SendMessage } from "../../services/shared/SendMessage.js";
+import { authRequest } from "../../../types/express";
+import { getUserFromRequest } from "../../utils/AttachUser";
+import { SendMessage } from "../../services/shared/SendMessage";
 
 
 class UserController extends SendMessage {

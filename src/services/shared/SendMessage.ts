@@ -1,6 +1,6 @@
 
 import twilio from "twilio";
-import { ApiError } from "../../utils/ApiError.js";
+import { ApiError } from "../../utils/ApiError";
 
 export class SendMessage {
     phonenumber: number | undefined;

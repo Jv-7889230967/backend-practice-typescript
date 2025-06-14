@@ -1,20 +1,19 @@
 import express from "express";
-import profileRouter from "./Routes/social/SocialProfile.js";
-import { errorHandler } from "./middlewares/ErrorMiddleware.js";
+import profileRouter from "./Routes/social/SocialProfile"
+import { errorHandler } from "./middlewares/ErrorMiddleware";
+import connectDB from "./DB";
 import { configDotenv } from "dotenv";
-import userRouter from "./Routes/auth/UserRoutes.js";
-import followRouter from "./Routes/social/SocialFollowers.js";
-import postRouter from "./Routes/social/SocialPost.js";
-import likeRouter from "./Routes/social/SocialLike.js";
-import commentRouter from "./Routes/social/SocialComment.js";
-import chatRouter from "./Routes/chat/chats.js";
-import messageRouter from "./Routes/chat/message.routes.js";
+import userRouter from "./Routes/auth/UserRoutes";
+import followRouter from "./Routes/social/SocialFollowers";
+import postRouter from "./Routes/social/SocialPost";
+import likeRouter from "./Routes/social/SocialLike";
+import commentRouter from "./Routes/social/SocialComment";
+import chatRouter from "./Routes/chat/chats";
+import messageRouter from "./Routes/chat/message.routes"
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { initializeSocket } from "./socket.js";
-import connectDB from "./DB/index.js";
-
+import { initializeSocket } from "./socket";
 
 configDotenv();
 const app = express();
@@ -25,7 +24,6 @@ const server = createServer(app);
 const io = new Server(server);
 
 app.set("io", io) //setting the socket io server instance to the app to get it later in the app to emit events
-// console.log(app)
 initializeSocket(io);
 app.use(cookieParser());
 app.use(express.json());

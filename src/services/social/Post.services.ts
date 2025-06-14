@@ -1,5 +1,5 @@
-import { User } from "../../models/auth/UserModels.js"
-import { ApiError } from "../../utils/ApiError.js"
+import { User } from "../../models/auth/UserModels"
+import { ApiError } from "../../utils/ApiError"
 
 
 export class PostServcies {
