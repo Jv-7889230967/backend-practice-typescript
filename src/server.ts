@@ -10,6 +10,7 @@ import likeRouter from "./Routes/social/SocialLike";
 import commentRouter from "./Routes/social/SocialComment";
 import chatRouter from "./Routes/chat/chats";
 import messageRouter from "./Routes/chat/message.routes"
+import searchRouter from "./Routes/postgres/search-route"
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import { createServer } from "http";
@@ -31,6 +32,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/social", profileRouter, followRouter, postRouter, likeRouter, commentRouter);
 app.use("/api/v1/chat", chatRouter)
 app.use("/api/v1/message", messageRouter)
+app.use("/api/v2/postgres/search",searchRouter)
 
 app.use(errorHandler);
 

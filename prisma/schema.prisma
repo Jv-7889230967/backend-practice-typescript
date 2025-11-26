@@ -1,0 +1,21 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User{
+  id Int @id @default (autoincrement())
+  email String  @unique
+  name  String?
+  hobbies String[]
+  interests String[]
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
+
+  @@index([searchVector], type: Gin)
+}

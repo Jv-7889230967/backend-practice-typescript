@@ -5,6 +5,7 @@ import { ApiError } from "../../utils/ApiError";
 export class SendMessage {
     phonenumber: number | undefined;
     payload: string | undefined;
+
     constructor(phonenumber: number, payload: string) {
         this.phonenumber = phonenumber;
         this.payload = payload;
